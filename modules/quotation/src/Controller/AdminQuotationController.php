@@ -12,6 +12,8 @@ use Quotation\Form\QuotationSearchType;
 use Quotation\Service\QuotationFileSystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class AdminQuotationController extends FrameworkBundleAdminController
 {
@@ -47,8 +49,6 @@ class AdminQuotationController extends FrameworkBundleAdminController
         $nbQuotations = count($quotationRepository->findAll());
         $nbQuotationsFilter = count($quotationRepository->findQuotationsByFilters());
 
-//        $nbQuotations = count([$quotationRepository->findAll(), $quotationRepository->findQuotationsByFilters()]);
-
         return $this->render('@Modules/quotation/templates/admin/index_quotation.html.twig', [
             'quotations' => $quotations,
             'page' => $page,
@@ -56,6 +56,28 @@ class AdminQuotationController extends FrameworkBundleAdminController
             'nbPagesFilter' => ceil($nbQuotationsFilter/self::NB_MAX_QUOTATIONS_PER_PAGE),
             'quotationFilterForm' => $quotationFilterForm->createView(),
         ]);
+    }
+
+    public function viewPdf()
+    {
+        // Mise en place d'options pour dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFront', 'Arial');
+
+        // Instanciation de l'objet 'Dompdf' et utilisation de la classe
+        $dompdf = new Dompdf();
+
+        // Chargement de la page HTML
+        $dompdf->loadHtml('templates/pdf/pdf.html.twig');
+
+        // Format du document PDF
+        $dompdf->setPaper('A4', 'landscape');
+
+        // Rendu du HTML en format PDF
+        $dompdf->render();
+
+        // Génère le PDF dans le navigateur
+        $dompdf->stream("test.pdf");
     }
 
     public function add(Request $request)
