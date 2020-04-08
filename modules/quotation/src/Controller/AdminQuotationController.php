@@ -10,10 +10,10 @@ use Quotation\Entity\Quotation;
 use Quotation\Form\QuotationCustomerType;
 use Quotation\Form\QuotationSearchType;
 use Quotation\Service\QuotationFileSystem;
+use Quotation\Service\QuotationPdf;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+
 
 class AdminQuotationController extends FrameworkBundleAdminController
 {
@@ -58,26 +58,25 @@ class AdminQuotationController extends FrameworkBundleAdminController
         ]);
     }
 
-    public function viewPdf()
+    public function pdfView(QuotationPdf $quotationPdf)
     {
-        // Mise en place d'options pour dompdf
-        $pdfOptions = new Options();
-        $pdfOptions->set('defaultFront', 'Arial');
+        $quotationRepository = $this->get('quotation_repository');
+        $quotations = $quotationRepository->findAll();
 
-        // Instanciation de l'objet 'Dompdf' et utilisation de la classe
-        $dompdf = new Dompdf();
+        $data = [];
+        $customerData = [];
+        $html = '<div>test</div>';
+        $template = '@Modules/quotation/templates/admin/pdf/pdf_quotation.html.twig';
 
-        // Chargement de la page HTML
-        $dompdf->loadHtml('templates/pdf/pdf.html.twig');
+        foreach ($data as $datum) {
+            array_push($customerData, $datum);
+            $quotationPdf->createPDF($html, $customerData, $template);
+        }
 
-        // Format du document PDF
-        $dompdf->setPaper('A4', 'landscape');
+        return $this->renderView($template, [
+            'quotations' => $quotations
+        ]);
 
-        // Rendu du HTML en format PDF
-        $dompdf->render();
-
-        // Génère le PDF dans le navigateur
-        $dompdf->stream("test.pdf");
     }
 
     public function add(Request $request)

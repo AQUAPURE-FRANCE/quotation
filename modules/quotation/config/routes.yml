@@ -10,6 +10,14 @@ quotation_admin:        #RouteName
   requirements:
     page: '\d+'
 
+quotation_admin_pdf:
+  path: quotation/admin/pdf_view
+  methods: [GET]
+  defaults:
+    _controller: 'Quotation\Controller\AdminQuotationController::pdfView'
+    _legacy_controller: 'AdminQuotationController'
+    _legacy_link: 'AdminQuotationController'
+
 quotation_admin_add:
   path: quotation/admin/add
   methods: [GET, POST]
