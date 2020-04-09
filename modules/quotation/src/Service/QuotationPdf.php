@@ -20,8 +20,6 @@ class QuotationPdf
             $html = $this->renderView($template, $data);
         }
 
-//        $html = $this->renderView('@Modules/quotation/templates/admin/pdf/pdf_quotation.html.twig', $data);
-
         // Chargement de la page HTML
         $dompdf->loadHtml($html);
 

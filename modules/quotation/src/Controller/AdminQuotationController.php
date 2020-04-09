@@ -14,7 +14,6 @@ use Quotation\Service\QuotationPdf;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-
 class AdminQuotationController extends FrameworkBundleAdminController
 {
     const NB_MAX_QUOTATIONS_PER_PAGE = 10;
