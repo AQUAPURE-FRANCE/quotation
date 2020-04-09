@@ -63,14 +63,15 @@ class AdminQuotationController extends FrameworkBundleAdminController
         $quotationRepository = $this->get('quotation_repository');
         $quotations = $quotationRepository->findAll();
 
+        $html = '';
         $data = [];
-        $customerData = [];
-        $html = '<div>test</div>';
         $template = '@Modules/quotation/templates/admin/pdf/pdf_quotation.html.twig';
+        $fileName = 'test';
+        $customerData = [];
 
-        foreach ($data as $datum) {
-            array_push($customerData, $datum);
-            $quotationPdf->createPDF($html, $customerData, $template);
+        foreach ($data as $value) {
+            array_push($customerData, $value);
+            $quotationPdf->createPDF($html, $customerData, $template, $fileName);
         }
 
         return $this->renderView($template, [

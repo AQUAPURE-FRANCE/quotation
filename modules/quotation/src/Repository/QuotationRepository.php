@@ -225,6 +225,11 @@ class QuotationRepository
                     ->orderBy('q.date_add', 'DESC')
                     ->execute()->fetchAll();
                 break;
+            default:
+                $this->addQuotationFromAndJoin($query);
+                return $query
+                    ->addGroupBy('q.id_quotation')
+                    ->execute()->fetchAll();
         endswitch;
     }
 
