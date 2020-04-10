@@ -7,18 +7,13 @@ use Dompdf\Options;
 
 class QuotationPdf
 {
-    public function createPDF($html, array $data, $template = null, $fileName = null)
+    public function createPDF($html, Dompdf $dompdf, $fileName = null)
     {
-        // Mise en place d'options pour dompdf
-        $pdfOptions = new Options();
-        $pdfOptions->set('defaultFont', 'Arial');
 
-        $dompdf = new Dompdf($pdfOptions);
-
-        // Récupère le HTML généré dans le fichier twig
-        if ($template !== null) {
-            $html = $this->renderView($template, $data);
-        }
+//        // Récupère le HTML généré dans le fichier twig
+//        if ($template !== null) {
+//            $html = $this->twig->render($template, $data);
+//        }
 
         // Chargement de la page HTML
         $dompdf->loadHtml($html);

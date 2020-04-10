@@ -2,6 +2,8 @@
 
 namespace Quotation\Controller;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Query\GetCustomerForViewing;
 use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\Password;
@@ -13,6 +15,7 @@ use Quotation\Service\QuotationFileSystem;
 use Quotation\Service\QuotationPdf;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminQuotationController extends FrameworkBundleAdminController
 {
@@ -57,26 +60,37 @@ class AdminQuotationController extends FrameworkBundleAdminController
         ]);
     }
 
-    public function pdfView(QuotationPdf $quotationPdf)
+    /**
+     * @return Response
+     */
+    public function pdfView(): Response
     {
         $quotationRepository = $this->get('quotation_repository');
         $quotations = $quotationRepository->findAll();
 
-        $html = '';
-        $data = [];
         $template = '@Modules/quotation/templates/admin/pdf/pdf_quotation.html.twig';
-        $fileName = 'test';
-        $customerData = [];
+        $fileName = '_test';
 
-        foreach ($data as $value) {
-            array_push($customerData, $value);
-            $quotationPdf->createPDF($html, $customerData, $template, $fileName);
+        $quotationPdf = new QuotationPdf();
+
+        $html = '';
+
+        foreach ($quotations as $quotation) {
+//            dump($quotation);
+            // Mise en place d'options pour dompdf
+            $pdfOptions = new Options();
+            $pdfOptions->set('defaultFont', 'Arial');
+
+            $dompdf = new Dompdf($pdfOptions);
+
+            $html = $this->renderView($template, [
+                'id_quotation' => $quotation['id_quotation'],
+                'firstname' => $quotation['firstname'],
+                'lastname' => $quotation['lastname'],
+            ]);
+            $quotationPdf->createPDF($html, $dompdf, $fileName);
         }
-
-        return $this->renderView($template, [
-            'quotations' => $quotations
-        ]);
-
+//        die();
     }
 
     public function add(Request $request)

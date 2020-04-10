@@ -11,7 +11,7 @@ quotation_admin:        #RouteName
     page: '\d+'
 
 quotation_admin_pdf:
-  path: quotation/admin/pdf_view
+  path: quotation/admin/pdf_view/{id_quotation}
   methods: [GET]
   defaults:
     _controller: 'Quotation\Controller\AdminQuotationController::pdfView'
